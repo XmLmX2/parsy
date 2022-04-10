@@ -1,0 +1,19 @@
+{
+    "name": "marius/parsy",
+    "description": "A small application for parsing HTML data into jobs.",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Parsy\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Marius Mertoiu",
+            "email": "marius.mertoiu@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    }
+}
