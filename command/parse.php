@@ -1,8 +1,17 @@
 <?php
+/**
+ * User: Marius Mertoiu
+ * Date: 10/04/2022 18:52
+ * Email: marius.mertoiu@gmail.com
+ */
 
-require_once getcwd() . '/loader.php';
+require_once str_replace('/command', '', realpath(dirname(__FILE__))) . '/loader.php';
 
+use Parsy\Service\RunningModeService;
 use Parsy\Controller\ParserController;
+
+// Allow only CLI run
+RunningModeService::redirectIfNotCli();
 
 $fileName = $argv[1] ?? null;
 

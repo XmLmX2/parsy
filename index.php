@@ -2,5 +2,19 @@
 
 require_once 'loader.php';
 
-// TODO :: list the jobs
-echo 'aici vom lista';
+use Parsy\Controller\JobController;
+use Parsy\Controller\ErrorController;
+
+$page = $_GET['page'] ?? 'list';
+
+// Load error page
+if ($page === 'error') {
+    $errorController = new ErrorController();
+    $errorController->show();
+
+    die;
+}
+
+// Load list page
+$jobController = new JobController();
+$jobController->list();

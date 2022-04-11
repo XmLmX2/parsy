@@ -29,11 +29,11 @@ class Database
      */
     private function loadConfig()
     {
-        $this->host = defined('DB_HOST') ? DB_HOST : null;
-        $this->port = defined('DB_PORT') ? DB_PORT : null;
-        $this->name = defined('DB_NAME') ? DB_NAME : null;
-        $this->user = defined('DB_USER') ? DB_USER : null;
-        $this->pass = defined('DB_PASS') ? DB_PASS : null;
+        $this->host = $_ENV['DB_HOST'] ?? null;
+        $this->port = $_ENV['DB_PORT'] ?? null;
+        $this->name = $_ENV['DB_NAME'] ?? null;
+        $this->user = $_ENV['DB_USER'] ?? null;
+        $this->pass = $_ENV['DB_PASS'] ?? null;
     }
 
     /**
@@ -53,12 +53,11 @@ class Database
 
         } catch (\Exception $e) {
             // Create the database if it's missing
-            if ($e->getCode() === PDO_EXCEPTION_UNKNOWN_DATABASE_CODE) {
-                $response['message'] = 'Missing database! Initialize a new database by accessing: '
-                    . WEBROOT . 'init_db.php';
+            if ($e->getCode() === $_ENV['PDO_EXCEPTION_UNKNOWN_DATABASE_CODE']) {
+                $response['message'] = 'Missing database! Initialize the database by running: php command/install.php';
+            } else {
+                $response['message'] = $e->getMessage();
             }
-
-            $response['message'] = $e->getMessage();
         }
 
         return $response;

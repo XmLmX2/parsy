@@ -11,6 +11,6 @@ class ErrorRedirector
 {
     public static function redirect(int $type = 404, ?string $message = null)
     {
-        header('Location: ' . WEBROOT . 'error.php?type=' . $type . ($message ? '&msg=' . $message : ''));
+        header('Location: ' . $_ENV['WEBROOT'] . '?page=error&type=' . $type . ($message ? '&msg=' . $message : ''));
     }
 }
