@@ -8,6 +8,7 @@
 namespace Parsy\Repository;
 
 use DateTime;
+use function PHPUnit\TestFixture\func;
 
 class JobRepository extends BaseRepository
 {
@@ -71,7 +72,11 @@ class JobRepository extends BaseRepository
     /**
      * Returns multiple rows based on criteria.
      */
-    public function findBy(array $criteria = [], bool $fetchOnlyOneResult = false)
+    public function findBy(
+        array $criteria = [],
+        bool $fetchOnlyOneResult = false,
+        array $orderByParams = []
+    )
     {
         $where = '';
         $prepare = [];
@@ -126,6 +131,21 @@ class JobRepository extends BaseRepository
             $prepare['profession_name'] = trim($criteria['profession_name']);
         }
 
+        if (!empty($criteria['search'])) {
+            $where .= " AND (j.name LIKE :searchTerm1 OR j.description LIKE :searchTerm2
+                 OR c.name LIKE :searchTerm3 OR p.name LIKE :searchTerm4)";
+            $prepare['searchTerm1'] = '%' . trim($criteria['search']) . '%';
+            $prepare['searchTerm2'] = '%' . trim($criteria['search']) . '%';
+            $prepare['searchTerm3'] = '%' . trim($criteria['search']) . '%';
+            $prepare['searchTerm4'] = '%' . trim($criteria['search']) . '%';
+        }
+
+        $orderBy = implode(',', array_map(function($array) {
+            return $array['column'] . ' ' . $array['direction'];
+        }, $orderByParams));
+
+        $orderBy = !empty($orderBy) ? ' ORDER BY ' . $orderBy : null;
+
         $sql = "SELECT
                     j.id,
                     j.reference_id,
@@ -141,8 +161,8 @@ class JobRepository extends BaseRepository
                 LEFT JOIN profession p ON p.id = j.profession_id
                 LEFT JOIN company c ON c.id = j.company_id
                 WHERE 1
-                " . $where . "
-                ORDER BY j.name ASC";
+                " . $where .
+                $orderBy;
 
         $statement = $this->db->prepare($sql);
         $statement->execute($prepare);
