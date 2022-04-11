@@ -2,3 +2,4 @@ vendor
 
 .idea
 config/credentials.local.php
+public/uploads/logs

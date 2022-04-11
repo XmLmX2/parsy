@@ -1,5 +1,6 @@
 <?php
 
-require_once 'config/loader.php';
+require_once 'loader.php';
 
+// TODO :: list the jobs
 echo 'aici vom lista';

@@ -2,7 +2,9 @@
 
 namespace Parsy\Core;
 
+use Parsy\Service\ErrorRedirector;
 use PDO;
+use PDOException;
 
 class Database
 {
@@ -14,14 +16,12 @@ class Database
 
     private ?PDO $pdo = null;
 
-    function __construct()
-    {
-        $this->loadConfig();
+    private bool $redirectOnError;
 
-        // Initialize the connexion
-        if (!$this->isInit()) {
-            $this->initDb();
-        }
+    function __construct(bool $redirectOnError = true)
+    {
+        $this->redirectOnError = $redirectOnError;
+        $this->loadConfig();
     }
 
     /**
@@ -37,25 +37,156 @@ class Database
     }
 
     /**
-     * Check if there is an instance of the class.
+     * Initialize the PDO object.
      */
-    private function isInit(): bool
+    private function initDb(): array
     {
-        return $this->pdo instanceof PDO;
+        $response = [
+            'status' => false,
+            'message' => null
+        ];
+
+        try {
+            $this->pdo = $this->initPdo();
+
+            $response['status'] = true;
+
+        } catch (\Exception $e) {
+            // Create the database if it's missing
+            if ($e->getCode() === PDO_EXCEPTION_UNKNOWN_DATABASE_CODE) {
+                $response['message'] = 'Missing database! Initialize a new database by accessing: '
+                    . WEBROOT . 'init_db.php';
+            }
+
+            $response['message'] = $e->getMessage();
+        }
+
+        return $response;
+    }
+
+    /**
+     * Get the PDO object.
+     */
+    public function get(): ?PDO
+    {
+        $init = $this->initDb();
+
+        if (empty($init['status']) && $this->redirectOnError) {
+            ErrorRedirector::redirect(500,$init['message'] ?? null);
+        }
+
+        return $this->pdo;
     }
 
     /**
      * Initialize the PDO object.
      */
-    private function initDb()
+    private function initPdo(bool $requireDatabase = true): PDO
     {
-        $this->pdo = new PDO(
-            'mysql:host='.$this->host.';port='.$this->port.';dbname='.$this->name.';charset=utf8',
+        $dsn = 'mysql:host=' . $this->host . ';port=' . $this->port;
+
+        if ($requireDatabase) {
+            $dsn .= ';dbname=' . $this->name;
+        }
+
+        $dsn .= ';charset=utf8';
+
+        return new PDO(
+            $dsn,
             $this->user, $this->pass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]
         );
+    }
+
+    /**
+     * Create database.
+     */
+    public function createDatabase(): array
+    {
+        $response = [
+            'status' => false,
+            'message' => ''
+        ];
+
+        try {
+            $pdo = $this->initPdo(false);
+
+            $create = $pdo->exec("CREATE DATABASE `" . $this->name . "`");
+
+            if ($create) {
+                $response['status'] = true;
+                $response['message'] = 'Database "' . $this->name . '" has been created successfully!';
+            }
+        } catch (PDOException $e) {
+            $response['message'] = $e->getMessage();
+        }
+
+        return $response;
+    }
+
+    /**
+     * Get table statements.
+     */
+    private function getTableStatements(): array
+    {
+        return [
+            'profession' => 'CREATE TABLE profession (
+                    id int auto_increment NOT NULL,
+                    name varchar(50) NOT NULL UNIQUE,
+                    PRIMARY KEY(id)
+                )
+                ENGINE=InnoDB
+                DEFAULT CHARSET=utf8mb4
+                COLLATE=utf8mb4_0900_ai_ci;
+            ',
+
+            'job' => 'CREATE TABLE job (
+                    id int auto_increment NOT NULL,
+                    reference_id int NULL,
+                    name varchar(50) NOT NULL,
+                    description text NOT NULL,
+                    expires_at date NOT NULL,
+                    openings int NOT NULL,
+                    company varchar(30) NOT NULL,
+                    profession_id int NOT NULL,
+                    CONSTRAINT job_FK FOREIGN KEY (id) REFERENCES profession(id),
+                    PRIMARY KEY(id)
+                )
+                ENGINE=InnoDB
+                DEFAULT CHARSET=utf8mb4
+                COLLATE=utf8mb4_0900_ai_ci;
+            ',
+        ];
+    }
+
+    /**
+     * Create database tables.
+     */
+    public function createDatabaseTables(): array
+    {
+        $response = [
+            'status' => false,
+            'message' => null
+        ];
+
+        $pdo = $this->get();
+
+        foreach ($this->getTableStatements() as $statement) {
+            try {
+                $exec = $pdo->exec($statement);
+            } catch (\Exception $e) {
+                $response['message'] = $e->getMessage();
+
+                return $response;
+            }
+        }
+
+        $response['status'] = true;
+        $response['message'] = 'The database tables have been added!';
+
+        return $response;
     }
 }
