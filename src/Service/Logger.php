@@ -24,7 +24,7 @@ class Logger
 
         $log .= $type . ': ' . $content . "\n";
 
-        return file_put_contents($_ENV['UPLOADS_PATH'] . 'logs/' . $fileName, $log, FILE_APPEND);
+        return file_put_contents($_ENV['LOGS_PATH'] . $fileName, $log, FILE_APPEND);
     }
 
     public static function success(

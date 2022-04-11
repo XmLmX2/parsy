@@ -29,7 +29,7 @@ class DataParser
         }
 
         // Load the file
-        $filePath = $_ENV['UPLOADS_PATH'] . 'jobs_data/' . $file;
+        $filePath = $_ENV['DATA_FILES_PATH'] . $file;
 
         if (!file_exists($filePath)) {
             $message = 'The file doesn\'t exist. (' . $filePath . ')';
