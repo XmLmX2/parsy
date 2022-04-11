@@ -5,7 +5,9 @@ namespace Parsy\Service;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
+use Exception;
 use Parsy\Model\FileJob;
+use Parsy\Model\FileJobCollection;
 
 /**
  * A service used for extracting and transforming the HTML data into a collection of FileJob DTOs.
@@ -14,29 +16,33 @@ class DataParser
 {
     const DEFAULT_FILE = 'data.html';
 
-    public function getData(?string $file = null): array
-    {
-        return $this->extractJobsFromFile($file);
-    }
-
     /**
      * Look for jobs in required file.
+     * @throws Exception
      */
-    private function extractJobsFromFile(?string $file = self::DEFAULT_FILE): array
+    public function extractJobsFromFile(?string $file = self::DEFAULT_FILE): FileJobCollection
     {
+        $fileJobCollection = new FileJobCollection();
+
         if (!$file) {
             $file = self::DEFAULT_FILE;
         }
 
-        $jobs = [];
-
         // Load the file
-        $filePath = UPLOADS_PATH . $file;
+        $filePath = UPLOADS_PATH . 'jobs_data/' . $file;
+
+        if (!file_exists($filePath)) {
+            $message = 'The file doesn\'t exist. (' . $filePath . ')';
+
+            Logger::error($message);
+
+            throw new Exception($message);
+        }
 
         $dom = new DOMDocument();
         $dom->loadHTMLFile($filePath);
 
-        Logger::logNotice('The file has been loaded. (' . $filePath . ')');
+        Logger::notice('The file has been loaded. (' . $filePath . ')');
 
         // Search for jobs based on "job" CSS class
         $xpath = new DOMXPath($dom);
@@ -44,25 +50,29 @@ class DataParser
 
         foreach ($jobsData as $job) {
             if ($fileJob = $this->transformNodeIntoJobModel($job)) {
-                $jobs[] = $fileJob;
+                $fileJobCollection->addJob($fileJob);
             }
         }
 
-        return $jobs;
+        return $fileJobCollection;
     }
 
     /**
      * Parse the job HTML to a FileJob DTO.
      */
-    private function transformNodeIntoJobModel(DOMElement $job): FileJob
+    private function transformNodeIntoJobModel(DOMElement $job): ?FileJob
     {
         $jobParser = new JobParser($job);
+
+        if (!$jobParser->hasValidData()) {
+            return null;
+        }
 
         return (new FileJob())
             ->setReferenceId($jobParser->extractReferenceId())
             ->setName($jobParser->extractName())
             ->setDescription($jobParser->extractDescription())
-            ->setExpiration($jobParser->extractExpirationDate())
+            ->setExpirationDate($jobParser->extractExpirationDate())
             ->setOpenings($jobParser->extractOpenings())
             ->setCompany($jobParser->extractCompany())
             ->setProfession($jobParser->extractProfession());

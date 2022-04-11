@@ -24,7 +24,7 @@ class JobParser
     {
         $this->job = $job;
 
-        Logger::logNotice('Job parsing has started. (' . $this->logIdentifier() . ')');
+        Logger::notice('Job parsing has started. (' . $this->logIdentifier() . ')');
     }
 
     /**
@@ -54,7 +54,7 @@ class JobParser
         $id = (int) $this->job->getAttribute('data-id');
 
         if (empty($id)) {
-            Logger::logError('Unable to extract the reference ID. (' . $this->logIdentifier() . ')');
+            Logger::error('Unable to extract the reference ID. (' . $this->logIdentifier() . ')');
         }
 
         return $id;
@@ -67,7 +67,7 @@ class JobParser
             return (string) $h2->nodeValue;
         }
 
-        Logger::logError('Unable to extract the name. (' . $this->logIdentifier() . ')');
+        Logger::error('Unable to extract the name. (' . $this->logIdentifier() . ')');
 
         return null;
     }
@@ -79,7 +79,7 @@ class JobParser
             return (string) $paragraph->nodeValue;
         }
 
-        Logger::logError('Unable to extract the description. (' . $this->logIdentifier() . ')');
+        Logger::error('Unable to extract the description. (' . $this->logIdentifier() . ')');
 
         return null;
     }
@@ -115,13 +115,13 @@ class JobParser
             $expirationDate = $tableData[self::EXPIRATION_CODE];
 
             if (empty($expirationDate)) {
-                Logger::logError('Expiration date was not found in the file. (' . $this->logIdentifier() . ')');
+                Logger::error('Expiration date was not found in the file. (' . $this->logIdentifier() . ')');
             }
 
             return $expirationDate ? new DateTime($tableData[self::EXPIRATION_CODE]) : null;
         } catch (Exception $e) {
             if (empty($expirationDate)) {
-                Logger::logError('Expiration date could not be converted to DateTime. (' . $this->logIdentifier() . ')');
+                Logger::error('Expiration date could not be converted to DateTime. (' . $this->logIdentifier() . ')');
             }
 
             return null;
@@ -135,7 +135,7 @@ class JobParser
         $openings = $tableData[self::OPENINGS_CODE] ? (int) $tableData[self::OPENINGS_CODE] : null;
 
         if (!$openings) {
-            Logger::logError('Openings not found in the file. (' . $this->logIdentifier() . ')');
+            Logger::error('Openings not found in the file. (' . $this->logIdentifier() . ')');
         }
 
         return $openings;
@@ -148,7 +148,7 @@ class JobParser
         $company = $tableData[self::COMPANY_CODE] ?? null;
 
         if (empty($company)) {
-            Logger::logError('Company not found in the file. (' . $this->logIdentifier() . ')');
+            Logger::error('Company not found in the file. (' . $this->logIdentifier() . ')');
         }
 
         return $company;
@@ -161,9 +161,22 @@ class JobParser
         $profession = $tableData[self::PROFESSION_CODE] ?? null;
 
         if (empty($company)) {
-            Logger::logError('Profession not found in the file. (' . $this->logIdentifier() . ')');
+            Logger::error('Profession not found in the file. (' . $this->logIdentifier() . ')');
         }
 
         return $profession;
+    }
+
+    /**
+     * Check if all required files have values.
+     */
+    public function hasValidData(): bool
+    {
+        return $this->extractName() !== null &&
+            $this->extractDescription() !== null &&
+            $this->extractExpirationDate() !== null &&
+            $this->extractOpenings() !== null &&
+            $this->extractCompany() !== null &&
+            $this->extractProfession() !== null;
     }
 }

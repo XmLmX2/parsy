@@ -27,21 +27,21 @@ class Logger
         return file_put_contents(UPLOADS_PATH . 'logs/' . $fileName, $log, FILE_APPEND);
     }
 
-    public static function logSuccess(
+    public static function success(
         string $content,
         string $fileName = self::PARSER_FILE_NAME
     ) {
         return self::log($content, self::TYPE_SUCCESS,$fileName);
     }
 
-    public static function logError(
+    public static function error(
         string $content,
         string $fileName = self::PARSER_FILE_NAME
     ) {
         return self::log($content, self::TYPE_ERROR, $fileName);
     }
 
-    public static function logNotice(
+    public static function notice(
         string $content,
         string $fileName = self::PARSER_FILE_NAME
     ) {

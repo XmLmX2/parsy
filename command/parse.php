@@ -1,19 +1,27 @@
 <?php
 
 require_once getcwd() . '/loader.php';
-//require_once '../loader.php';
 
 use Parsy\Controller\ParserController;
 
 $fileName = $argv[1] ?? null;
 
 $controller = new ParserController();
-$response = $controller->parse();
+$response = $controller->parse($fileName);
 
-echo '<pre>';
-echo __FILE__ . ':' . __LINE__ . '<br>';
-var_dump($response);
-echo '</pre>';
-exit;
+// Show some info on console
+$status = !empty($response['parse']['status']) ? 'successful' : 'failed';
 
-// TODO :: Style the response
+echo "\n";
+echo 'Parse status: ' . $status . ' | ' . ($response['parse']['message'] ?? null) . "\n";
+echo "\n";
+
+echo "Database sync stats: \n" .
+    "Deleted jobs: " . $response['db_sync']['deleted'] . "\n" .
+    "Added jobs: " . $response['db_sync']['added'] . "\n" .
+    "Updated jobs: " . $response['db_sync']['updated'] . "\n"
+;
+
+echo "\n";
+
+die;

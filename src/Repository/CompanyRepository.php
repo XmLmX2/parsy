@@ -1,13 +1,13 @@
 <?php
 /**
  * User: Marius Mertoiu
- * Date: 10/04/2022 17:53
+ * Date: 11/04/2022 08:53
  * Email: marius.mertoiu@gmail.com
  */
 
 namespace Parsy\Repository;
 
-class ProfessionRepository extends BaseRepository
+class CompanyRepository extends BaseRepository
 {
     public function findBy(array $criteria, bool $fetchOnlyOneResult = false)
     {
@@ -27,7 +27,7 @@ class ProfessionRepository extends BaseRepository
         $sql = "SELECT
                     id,
                     name
-                FROM profession
+                FROM company
                 WHERE 1
                 " . $where . "
                 ORDER BY name ASC";
@@ -49,7 +49,7 @@ class ProfessionRepository extends BaseRepository
             'message' => null
         ];
 
-        $sql = "INSERT INTO profession (name) VALUES (:name)";
+        $sql = "INSERT INTO company (name) VALUES (:name)";
 
         $prepare = [
             'name' => $name,
@@ -61,18 +61,18 @@ class ProfessionRepository extends BaseRepository
         if ($execute) {
             $response['status'] = true;
             $response['insert_id'] = $this->db->lastInsertId();
-            $response['message'] = 'A new profession with ID ' . $response['insert_id'] . ' has been added.';
+            $response['message'] = 'A new company with ID ' . $response['insert_id'] . ' has been added.';
 
             return $response;
         }
 
-        $response['message'] = 'An error occurred while adding the profession to the database.';
+        $response['message'] = 'An error occurred while adding the company to the database.';
 
         return $response;
     }
 
     /**
-     * Search by name and return the ID of a profession from the database or create it and return the new ID.
+     * Search by name and return the ID of a company from the database or create it and return the new ID.
      */
     public function getOrCreateByName(string $name)
     {

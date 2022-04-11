@@ -31,7 +31,7 @@ Follow the steps below to get starting with the app.
   php command/install.php
   ```
 
-* run the parser
+* run the parser - you can pass a second argument for the filename. If you don't the default "data.html" value will be used
   ```sh
-  php command/parse.php
+  php command/parse.php data.html
   ```

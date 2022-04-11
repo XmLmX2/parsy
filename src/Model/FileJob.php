@@ -16,17 +16,17 @@ class FileJob
 {
     private ?int $referenceId;
 
-    private ?string $name;
+    private string $name;
 
-    private ?string $description;
+    private string $description;
 
-    private ?DateTime $expiration;
+    private DateTime $expirationDate;
 
-    private ?int $openings;
+    private int $openings;
 
-    private ?string $company;
+    private string $company;
 
-    private ?string $profession;
+    private string $profession;
 
     public function getReferenceId(): int
     {
@@ -45,7 +45,7 @@ class FileJob
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -57,21 +57,21 @@ class FileJob
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getExpiration(): DateTime
+    public function getExpirationDate(): DateTime
     {
-        return $this->expiration;
+        return $this->expirationDate;
     }
 
-    public function setExpiration(?DateTime $expiration): self
+    public function setExpirationDate(DateTime $expirationDate): self
     {
-        $this->expiration = $expiration;
+        $this->expirationDate = $expirationDate;
 
         return $this;
     }
@@ -81,7 +81,7 @@ class FileJob
         return $this->openings;
     }
 
-    public function setOpenings(?int $openings): self
+    public function setOpenings(int $openings): self
     {
         $this->openings = $openings;
 
@@ -93,7 +93,7 @@ class FileJob
         return $this->company;
     }
 
-    public function setCompany(?string $company): self
+    public function setCompany(string $company): self
     {
         $this->company = $company;
 
@@ -105,7 +105,7 @@ class FileJob
         return $this->profession;
     }
 
-    public function setProfession(?string $profession): self
+    public function setProfession(string $profession): self
     {
         $this->profession = $profession;
 

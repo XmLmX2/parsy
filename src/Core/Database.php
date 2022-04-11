@@ -143,6 +143,16 @@ class Database
                 COLLATE=utf8mb4_0900_ai_ci;
             ',
 
+            'company' => 'CREATE TABLE company (
+                    id int auto_increment NOT NULL,
+                    name varchar(30) NOT NULL UNIQUE,
+                    PRIMARY KEY(id)
+                )
+                ENGINE=InnoDB
+                DEFAULT CHARSET=utf8mb4
+                COLLATE=utf8mb4_0900_ai_ci;
+            ',
+
             'job' => 'CREATE TABLE job (
                     id int auto_increment NOT NULL,
                     reference_id int NULL,
@@ -150,9 +160,10 @@ class Database
                     description text NOT NULL,
                     expires_at date NOT NULL,
                     openings int NOT NULL,
-                    company varchar(30) NOT NULL,
+                    company_id int NOT NULL,
                     profession_id int NOT NULL,
-                    CONSTRAINT job_FK FOREIGN KEY (id) REFERENCES profession(id),
+                    CONSTRAINT company_FK FOREIGN KEY (company_id) REFERENCES company(id),
+                    CONSTRAINT job_FK FOREIGN KEY (profession_id) REFERENCES profession(id),
                     PRIMARY KEY(id)
                 )
                 ENGINE=InnoDB
