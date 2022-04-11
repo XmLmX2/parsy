@@ -15,6 +15,6 @@ if ($page === 'error') {
     die;
 }
 
-// Load list page
+// Load listing page
 $jobController = new JobController();
 $jobController->list();

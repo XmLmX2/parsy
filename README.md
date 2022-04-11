@@ -1,7 +1,7 @@
 # parsy
 
 <div align="center">
-  <h3 align="center">Wristwatch Store</h3>
+  <h3 align="center">Parsy</h3>
 
   <p align="center">
     A small application for parsing HTML data into jobs.
