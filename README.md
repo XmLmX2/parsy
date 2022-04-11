@@ -10,10 +10,10 @@
 
 ## Built With
 
-* [PHP OOP](https://php.net/)
-* [Docker](https://www.docker.com/)
+* [Composer](https://getcomposer.org/)
 * [Bootstrap](https://getbootstrap.com)
 * [jQuery](https://jquery.com)
+* [DataTables](https://datatables.net/)
 
 ## Getting Started
 
