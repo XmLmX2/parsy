@@ -9,6 +9,7 @@ namespace Parsy\Service;
 
 use DateTime;
 use DOMElement;
+use DOMNodeList;
 use Exception;
 
 class JobParser
@@ -95,11 +96,16 @@ class JobParser
 
         foreach ($this->job->getElementsByTagName('table') as $item) {
             $table = $item;
+            break;
         }
 
+        /** @var DOMElement $tableRow */
         foreach ($table->getElementsByTagName('tr') as $tableRow) {
-            $key = strtolower(trim($tableRow->firstElementChild->textContent));
-            $value = trim($tableRow->lastElementChild->textContent);
+            /** @var DOMNodeList $tableDataElems */
+            $tableDataElems = $tableRow->getElementsByTagName('td');
+
+            $key = strtolower(trim($tableDataElems->item(0)->textContent));
+            $value = trim($tableDataElems->item(1)->textContent);
 
             $data[$key] = $value;
         }
@@ -112,7 +118,7 @@ class JobParser
         $tableData = $this->groupTableElementsAsAnAssociativeArray();
 
         try {
-            $expirationDate = $tableData[self::EXPIRATION_CODE];
+            $expirationDate = $tableData[self::EXPIRATION_CODE] ?? null;
 
             if (empty($expirationDate)) {
                 Logger::error('Expiration date was not found in the file. (' . $this->logIdentifier() . ')');
@@ -132,7 +138,7 @@ class JobParser
     {
         $tableData = $this->groupTableElementsAsAnAssociativeArray();
 
-        $openings = $tableData[self::OPENINGS_CODE] ? (int) $tableData[self::OPENINGS_CODE] : null;
+        $openings = isset($tableData[self::OPENINGS_CODE]) ? (int) $tableData[self::OPENINGS_CODE] : null;
 
         if (!$openings) {
             Logger::error('Openings not found in the file. (' . $this->logIdentifier() . ')');

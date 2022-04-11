@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+    parsy_php_apache:
+        container_name: parsy_php_apache
+        image: php:7.4-apache
+        build:
+            context: ./config/docker/php
+            dockerfile: Dockerfile
+        depends_on:
+            - ${DB_HOST}
+        volumes:
+            - ./:/var/www/html/
+        ports:
+            - 9000:80
+    parsy_db:
+        container_name: ${DB_HOST}
+        image: mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${DB_NAME}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+        ports:
+            - "9906:3306"

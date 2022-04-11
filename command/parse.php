@@ -11,7 +11,7 @@ use Parsy\Service\RunningModeService;
 use Parsy\Controller\ParserController;
 
 // Allow only CLI run
-RunningModeService::redirectIfNotCli();
+//RunningModeService::redirectIfNotCli();
 
 $fileName = $argv[1] ?? null;
 

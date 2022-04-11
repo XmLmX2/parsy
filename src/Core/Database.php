@@ -32,8 +32,8 @@ class Database
         $this->host = $_ENV['DB_HOST'] ?? null;
         $this->port = $_ENV['DB_PORT'] ?? null;
         $this->name = $_ENV['DB_NAME'] ?? null;
-        $this->user = $_ENV['DB_USER'] ?? null;
-        $this->pass = $_ENV['DB_PASS'] ?? null;
+        $this->user = $_ENV['DB_USERNAME'] ?? null;
+        $this->pass = $_ENV['DB_PASSWORD'] ?? null;
     }
 
     /**
@@ -186,7 +186,7 @@ class Database
 
         foreach ($this->getTableStatements() as $statement) {
             try {
-                $exec = $pdo->exec($statement);
+                $pdo->exec($statement);
             } catch (\Exception $e) {
                 $response['message'] = $e->getMessage();
 

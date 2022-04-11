@@ -15,7 +15,7 @@ class FileJobCollection
     /**
      * @var FileJob[]
      */
-    private array $jobs;
+    private array $jobs = [];
 
     public function getJobs(): array
     {
