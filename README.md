@@ -4,12 +4,13 @@
   <h3 align="center">Parsy</h3>
 
   <p align="center">
-    A small application for parsing HTML data into jobs.
+    A small application that parses jobs listing HTML pages and saves them into a database.
   </p>
 </div>
 
 ## Built With
 
+* [Docker](https://www.docker.com/)
 * [Composer](https://getcomposer.org/)
 * [Bootstrap](https://getbootstrap.com)
 * [jQuery](https://jquery.com)
@@ -21,17 +22,17 @@ Follow the steps below to get starting with the app.
 
 ### Prerequisites
 
-* composer :: run the following command in your terminal
+* Build and start the Docker containers
   ```sh
-  composer install
+  docker-compose up
   ```
 
-* run the application installer - creates the database and tables
+* run the application installer via Docker - creates the database and tables
   ```sh
-  php command/install.php
+  docker-compose exec parsy_php_apache php command/install.php
   ```
 
-* run the parser - you can pass a second argument for the filename. If you don't the default "data.html" value will be used
+* run the parser via Docker - you can pass a second argument for the filename. If you don't the default "data.html" value will be used
   ```sh
-  php command/parse.php data.html
+  docker-compose exec parsy_php_apache php command/parse.php data.html
   ```
