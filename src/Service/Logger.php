@@ -24,6 +24,10 @@ class Logger
 
         $log .= $type . ': ' . $content . "\n";
 
+        if (!file_exists($_ENV['LOG_PATH'])) {
+            mkdir($_ENV['LOG_PATH'], 0755);
+        }
+
         return file_put_contents($_ENV['LOG_PATH'] . $fileName, $log, FILE_APPEND);
     }
 

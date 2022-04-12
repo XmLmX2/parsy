@@ -27,6 +27,11 @@ Follow the steps below to get starting with the app.
   docker-compose up -d
   ```
 
+* run the composer installer via Docker
+  ```sh
+  docker-compose exec parsy_php_apache composer install
+  ```
+
 * run the application installer via Docker - creates the database and tables
   ```sh
   docker-compose exec parsy_php_apache php command/install.php
