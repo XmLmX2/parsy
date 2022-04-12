@@ -1,6 +1,6 @@
 <?php
 
-require_once 'loader.php';
+require_once 'bootstrap.php';
 
 use Parsy\Controller\JobController;
 use Parsy\Controller\ErrorController;

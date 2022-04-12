@@ -22,9 +22,9 @@ Follow the steps below to get starting with the app.
 
 ### Prerequisites
 
-* Build and start the Docker containers
+* build and start the Docker containers
   ```sh
-  docker-compose up
+  docker-compose up -d
   ```
 
 * run the application installer via Docker - creates the database and tables
@@ -35,4 +35,9 @@ Follow the steps below to get starting with the app.
 * run the parser via Docker - you can pass a second argument for the filename. If you don't the default "data.html" value will be used
   ```sh
   docker-compose exec parsy_php_apache php command/parse.php data.html
+  ```
+
+* run the unit tests via Docker
+  ```sh
+  docker-compose exec parsy_php_apache php vendor/bin/phpunit tests
   ```

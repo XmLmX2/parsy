@@ -5,7 +5,7 @@
  * Email: marius.mertoiu@gmail.com
  */
 
-require_once str_replace('/command', '', realpath(dirname(__FILE__))) . '/loader.php';
+require_once str_replace('/command', '', realpath(dirname(__FILE__))) . '/bootstrap.php';
 
 use Parsy\Service\RunningModeService;
 use Parsy\Controller\ParserController;

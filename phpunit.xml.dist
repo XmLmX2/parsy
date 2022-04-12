@@ -1,0 +1,9 @@
+<phpunit bootstrap="bootstrap.php"
+         cacheResult ="false"
+>
+    <testsuites>
+        <testsuite name="tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
